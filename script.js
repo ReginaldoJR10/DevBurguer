@@ -173,18 +173,24 @@ checkoutBtn.addEventListener("click", function(){
 
     //Enviar o pedido para api whats
     const cartItems = cart.map((item) => {
-        return (
-            ` ${item.name} Quantidade: (${item.quantity}) Preço: R$${item.price} |`
-        )
-    }).join("")
+    return (
+        ` ${item.name} Quantidade: (${item.quantity}) Preço: R$${item.price} |` );
+        
+        }).join("");
 
-    const message = encodeURIComponent(cartItems)
-    const phone = "17997219867"
+        // Calcula o total do pedido
+        const total = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
-    window.open(`http://wa.me/${phone}?text=${message} Endereço: ${addressInput.value}`, "_blank")
+        // Monta a mensagem
+        const message = encodeURIComponent(`${cartItems} Total: R$${total.toFixed(2)} |`);
+        const phone = "17997219867";
 
-    cart = [];
-    updateCartModal();
+        window.open(`http://wa.me/${phone}?text=${message} Endereço: ${addressInput.value}`, "_blank");
+
+        // Limpa o carrinho e atualiza a interface
+        cart = [];
+        updateCartModal();
+
 
 })
 
@@ -192,7 +198,7 @@ checkoutBtn.addEventListener("click", function(){
 function checkRestauranteOpen() {
     const data = new Date();
     const hora = data.getHours(); // ✅ corrigido
-    return hora >= 1 && hora < 24; // true = aberto entre 18h e 22h
+    return hora >= 1 && hora < 24 ; // true = aberto entre 18h e 22h
 }
 
 const spanItem = document.getElementById("date-span");
