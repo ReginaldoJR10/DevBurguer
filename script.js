@@ -11,6 +11,7 @@ const addressWarn = document.getElementById ("address-warn")
 const extrasModal = document.getElementById("extras-modal");
 const extrasProductName = document.getElementById("extras-product-name");
 const extrasOptions = document.querySelectorAll("#extras-options input");
+const clearCartBtn = document.getElementById("clear-cart-btn");
 
 let cart = [];
 let selectedProduct = {}; // Guardar item clicado
@@ -57,6 +58,49 @@ document.getElementById("add-with-extras-btn").addEventListener("click", () => {
         quantity: 1
     });
 
+    // Ao clicar em qualquer botão "Adicionar ao Carrinho"
+    document.querySelectorAll(".add-to-cart-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            selectedProduct = {
+                name: btn.getAttribute("data-name"),
+                price: parseFloat(btn.getAttribute("data-price")),
+                category: btn.getAttribute("data-category") // <- bebida, lanche, etc.
+            };
+
+            // 🔹 Se for bebida → adiciona direto no carrinho e pula extras:
+            if (selectedProduct.category === "lata") {
+                cart.push({
+                    name: selectedProduct.name,
+                    price: selectedProduct.price,
+                    quantity: 1
+                });
+                updateCartModal();
+                cartModal.classList.remove("hidden");
+                cartModal.classList.add("flex");
+                return; // Sai da função e não abre o modal de extras
+            }
+
+            // 🔹 Limpa todas as opções de extras sempre que abrir novamente
+            extrasOptions.forEach(option => option.checked = false);
+
+            // Atualiza nome no modal
+            extrasProductName.textContent = `Adicionar extras para: ${selectedProduct.name}`;
+
+            // Abre modal de extras
+            extrasModal.classList.remove("hidden");
+            extrasModal.classList.add("flex");
+    });
+});
+
+// Botão X → limpar carrinho e fechar modal
+    clearCartBtn.addEventListener("click", () => {
+        cart = [];               // Esvazia o carrinho
+        updateCartModal();       // Atualiza na tela
+        cartModal.classList.add("hidden");
+        cartModal.classList.remove("flex");
+});
+
+
     updateCartModal(); // Atualiza modal principal
 
     // Fecha modal de extras
@@ -66,6 +110,13 @@ document.getElementById("add-with-extras-btn").addEventListener("click", () => {
     // Abre modal principal do carrinho automaticamente
     cartModal.classList.remove("hidden");
     cartModal.classList.add("flex");
+
+    // Apenas fecha a modal, sem limpar o carrinho
+    closeModalBtn.addEventListener("click", () => {
+    cartModal.classList.add("hidden");
+    cartModal.classList.remove("flex");
+});
+
 });
 
 //Atualiza o carrinho
