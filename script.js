@@ -8,59 +8,65 @@ const closeModalBtn = document.getElementById("close-modal-btn")
 const cartCounter = document.getElementById("cart-counter")
 const addressInput = document.getElementById("address")
 const addressWarn = document.getElementById ("address-warn")
+const extrasModal = document.getElementById("extras-modal");
+const extrasProductName = document.getElementById("extras-product-name");
+const extrasOptions = document.querySelectorAll("#extras-options input");
 
 let cart = [];
+let selectedProduct = {}; // Guardar item clicado
 
-// Abrir o modal do carrinho
-cartBtn.addEventListener("click", function() {
-    updateCartModal();
-    cartModal.style.display = "flex"
-})
+// 1️⃣ Quando clicar no botão de adicionar produto → abre modal de extras
+document.querySelectorAll(".add-to-cart-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+        selectedProduct = {
+            name: btn.getAttribute("data-name"),
+            price: parseFloat(btn.getAttribute("data-price"))
+        };
 
-// Fechar o modal quando clicar fora
-cartModal.addEventListener("click", function(event){
-    if(event.target === cartModal){
-        cartModal.style.display = "none"
-    }
-})
+        extrasProductName.textContent = `Adicionar extras para: ${selectedProduct.name}`;
+        extrasModal.classList.remove("hidden");
+        extrasModal.classList.add("flex");
+    });
+});
 
-closeModalBtn.addEventListener("click", function(){
-   cartModal.style.display = "none" 
-})
+// 2️⃣ Fechar modal de extras
+document.getElementById("close-extras-modal").addEventListener("click", () => {
+    extrasModal.classList.add("hidden");
+    extrasModal.classList.remove("flex");
+});
 
-menu.addEventListener("click", function(event){
-    // console.log(event.target)
+// 3️⃣ Adicionar ao carrinho com extras e abrir o carrinho principal
+document.getElementById("add-with-extras-btn").addEventListener("click", () => {
+    let extrasTotal = 0;
+    let extrasNames = [];
 
-    let parentButton= event.target.closest(".add-to-cart-btn")
+    extrasOptions.forEach(option => {
+        if (option.checked) {
+            extrasTotal += parseFloat(option.value);
+            extrasNames.push(option.getAttribute("data-name"));
+        }
+    });
 
-    if(parentButton){
-       const name = parentButton.getAttribute("data-name") 
-       const price = parseFloat(parentButton.getAttribute("data-price"))
-       addToCart(name, price)
-    }
-})
+    const finalPrice = selectedProduct.price + extrasTotal;
 
-// Função para adicionar no carrinho
-function addToCart(name, price){
-    const existingItem = cart.find(item => item.name === name)
+    cart.push({
+        name: extrasNames.length > 0
+            ? `${selectedProduct.name} (+ ${extrasNames.join(", ")})`
+            : selectedProduct.name,
+        price: finalPrice,
+        quantity: 1
+    });
 
-    if(existingItem){
-        //Se o item já existe, aumenta a quantidade +1
-        existingItem.quantity += 1;
-        
+    updateCartModal(); // Atualiza modal principal
 
-    }else{
+    // Fecha modal de extras
+    extrasModal.classList.add("hidden");
+    extrasModal.classList.remove("flex");
 
-        cart.push({
-            name,
-            price,
-            quantity: 1,
-        })
-    }
-    
-    updateCartModal()
-     
-}
+    // Abre modal principal do carrinho automaticamente
+    cartModal.classList.remove("hidden");
+    cartModal.classList.add("flex");
+});
 
 //Atualiza o carrinho
 function updateCartModal() {
@@ -175,7 +181,7 @@ checkoutBtn.addEventListener("click", function(){
     const cartItems = cart.map((item) => {
     return (
         ` ${item.name} Quantidade: (${item.quantity}) Preço: R$${item.price} |` );
-        
+
         }).join("");
 
         // Calcula o total do pedido

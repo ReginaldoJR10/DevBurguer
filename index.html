@@ -230,6 +230,32 @@
 
      </div>
     <!-- FIM MENU -->
+
+    <!-- MODAL DE ADICIONAIS -->
+    <div 
+        class="bg-black/60 w-full h-full fixed top-0 left-0 z-[100] items-center justify-center hidden"
+        id="extras-modal"
+    >
+        <div class="bg-white p-5 rounded-md min-w-[90%] md:min-w-[500px]">
+            <h2 class="text-center font-bold text-2xl mb-4" id="extras-product-name">Adicionar extras</h2>
+
+            <!-- Lista de adicionais -->
+            <div id="extras-options" class="flex flex-col gap-2">
+                <label><input type="checkbox" value="2.00" data-name="Bacon"> Bacon (+ R$2.00)</label>
+                <label><input type="checkbox" value="3.00" data-name="Cheddar"> Cheddar (+ R$3.00)</label>
+                <label><input type="checkbox" value="1.50" data-name="Ovo"> Ovo (+ R$1.50)</label>
+            </div>
+
+            <!-- Botões -->
+            <div class="flex justify-between mt-5">
+                <button id="close-extras-modal">Cancelar</button>
+                <button id="add-with-extras-btn" class="bg-green-500 text-white px-4 py-1 rounded">
+                    Adicionar ao carrinho
+                </button>
+            </div>
+        </div>
+    </div>
+
      
     <!-- MODAL CART -->
      <div 
