@@ -192,7 +192,7 @@ checkoutBtn.addEventListener("click", function(){
 function checkRestauranteOpen() {
     const data = new Date();
     const hora = data.getHours(); // ✅ corrigido
-    return hora >= 18 && hora < 23; // true = aberto entre 18h e 22h
+    return hora >= 1 && hora < 24; // true = aberto entre 18h e 22h
 }
 
 const spanItem = document.getElementById("date-span");
